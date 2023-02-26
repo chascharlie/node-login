@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="utf-8">
+        <title>Register</title>
+        <link rel="stylesheet" href="css/register.css">
+    </head>
+    <body>
+        <section>
+            <div class="container">
+                <h1>Create New Account</h1>
+                <p class="err-msg" hidden></p>
+                <form>
+                    <fieldset>
+                        <label for="first-name">First Name</label>
+                        <input type="text" class="first-name" id="first-name" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="last-name">Last Name</label>
+                        <input type="text" class="last-name" id="last-name" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="email">Email</label>
+                        <input type="email" class="email" id="email" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="password">Password</label>
+                        <input type="password" class="password" id="password" required>
+                    </fieldset>
+                    <p><input type="checkbox" required> I agree to the Terms and Conditions and privacy policy</p>
+                    <input type="submit" class="submit-button" value="Create Account">
+                </form>
+                <p>Already have an account? <a href="login.html">Sign in here</a></p>
+            </div>
+        </section>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="js/register.js"></script>
+    </body>
+</html>

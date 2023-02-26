@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="utf-8">
+        <title>Login</title>
+        <link rel="stylesheet" href="css/login.css">
+    </head>
+    <body>
+        <section>
+            <div class="container">
+                <h1>Sign In</h1>
+                <p class="err-msg" hidden></p>
+                <form>
+                    <fieldset>
+                        <label for="email">Email</label>
+                        <input type="email" class="email" id="email" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="password">Password</label>
+                        <input type="password" class="password" id="password" required>
+                    </fieldset>
+                    <p><input type="checkbox" class="remember-me"> Remember me</p>
+                    <input type="submit" class="submit-button" value="Sign In">
+                </form>
+                <p>New to our website? <a href="register.html">Sign up here</a></p>
+            </div>
+        </section>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="js/login.js"></script>
+    </body>
+</html>
