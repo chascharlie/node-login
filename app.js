@@ -106,7 +106,7 @@ app.post('/login',express.urlencoded({extended: true}), (req,res) => {
 
             // Insert new entry into sessions table
             db.run(`INSERT INTO sessions (userid,sessionid)
-            VALUES ('${userId}','${sessionId}');`, (err) => {
+            VALUES (${userId},'${sessionId}');`, (err) => {
                 if (err) {
                     res.jsonp({
                         success: false,
@@ -147,7 +147,7 @@ app.post('/mainpage',express.urlencoded({extended: true}), (req,res) => {
             let userId = row.userid; // Get correspondent user ID
 
             // Get details corresponding to user ID
-            db.get(`SELECT firstname, lastname, email FROM users WHERE userid='${userId}';`, (err,row) => {
+            db.get(`SELECT firstname, lastname, email FROM users WHERE userid=${userId};`, (err,row) => {
                 if (row) {
                     // Put results into variables
                     let firstName = row.firstname;
@@ -193,7 +193,7 @@ app.post('/delete',express.urlencoded({extended: true}), (req,res) => {
             let userId = row.userid; // Get user ID from entry
             
             // Check if password entered is correct
-            db.get(`SELECT userid FROM users WHERE password='${password}' AND userid='${userId}'`, (err,row) => {
+            db.get(`SELECT userid FROM users WHERE password='${password}' AND userid=${userId}`, (err,row) => {
                 if (row) {
                     // Delete row corresponding to user ID
                     db.run(`DELETE FROM users WHERE userid='${userId}'`, (err) => {
@@ -205,7 +205,7 @@ app.post('/delete',express.urlencoded({extended: true}), (req,res) => {
                         }
                         else { // No error
                             // Delete all sessions corresponding to user ID
-                            db.run(`DELETE FROM sessions WHERE userid='${userId}'`, (err) => {
+                            db.run(`DELETE FROM sessions WHERE userid=${userId}`, (err) => {
                                 if (err) { // If a SQL error occured
                                     res.jsonp({
                                         success: false,
@@ -235,6 +235,77 @@ app.post('/delete',express.urlencoded({extended: true}), (req,res) => {
                 }
             });
 
+        }
+        else if (err) { // If a SQL error occured
+            res.jsonp({
+                success: false,
+                msg: "SQL-related error, please contact administrators"
+            });
+        }
+        else { // No matching entry for user ID on users table
+            res.jsonp({
+                success: false,
+                msg: "User not found on database"
+            });  
+        }
+    });
+});
+
+// POST request edit
+// This will edit a user's account details
+app.post('/edit',express.urlencoded({extended: true}), (req,res) => {
+    let oldPassword = crypto.createHmac('sha256',req.body.oldpassword).digest('hex');
+    let sessionId = req.body.session;
+
+    // Find user ID corresponding to session
+    db.get(`SELECT userid FROM sessions WHERE sessionid='${sessionId}'`, (err,row) => {
+        if (row) { // If user ID was found
+            let userId = row.userid; // Get user ID from entry
+            
+            // Check if password entered is correct
+            db.get(`SELECT firstname, lastname, email, password FROM users WHERE password='${oldPassword}' AND userid=${userId}`, (err,row) => {
+                if (row) { // If entry was found
+                    // Get submitted values, or set to current ones if left empty
+                    let firstName = req.body.firstname || row.firstname;
+                    let lastName = req.body.lastname || row.lastname;
+                    let email = req.body.email || row.email;
+                    let newPassword = req.body.newpassword;
+
+                    if (newPassword) { // If a new password was entered
+                        newPassword = crypto.createHmac('sha256',newPassword).digest('hex'); // Hash it
+                    }
+                    else { newPassword = row.password; } // Otherwise set to current password
+
+                    // Update entry in database with new information
+                    db.run(`UPDATE users
+                    SET firstname='${firstName}', lastname='${lastName}', email='${email}', password='${newPassword}'
+                    WHERE userid=${userId}`, (err) => {
+                        if (err) { // If a SQL error occured
+                            res.jsonp({
+                                success: false,
+                                msg: "SQL-related error, please contact administrators"
+                            });
+                        }
+                        else { // No error
+                            res.jsonp({
+                                success: true
+                            })
+                        }
+                    });
+                }
+                else if (err) { // If a SQL error occured
+                    res.jsonp({
+                        success: false,
+                        msg: "SQL-related error, please contact administrators"
+                    });
+                }
+                else { // Entry not found and no error occured, meaning old password is incorrect
+                    res.jsonp({
+                        success: false,
+                        msg: "Incorrect old password"
+                    });  
+                }
+            });
         }
         else if (err) { // If a SQL error occured
             res.jsonp({

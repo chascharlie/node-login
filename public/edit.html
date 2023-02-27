@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="utf-8">
+        <title>Edit Account</title>
+        <link rel="stylesheet" href="css/edit.css">
+    </head>
+    <body>
+        <section>
+            <div class="container">
+                <h1>Edit Account</h1>
+                <p class="err-msg" hidden></p>
+                <form>
+                    <fieldset>
+                        <label for="first-name">First Name</label>
+                        <input type="text" class="first-name" id="first-name">
+                    </fieldset>
+                    <fieldset>
+                        <label for="last-name">Last Name</label>
+                        <input type="text" class="last-name" id="last-name">
+                    </fieldset>
+                    <fieldset>
+                        <label for="email">Email</label>
+                        <input type="email" class="email" id="email">
+                    </fieldset>
+                    <fieldset>
+                        <label for="password">New password</label>
+                        <input type="password" class="new-password" id="new-password">
+                    </fieldset>
+                    <fieldset>
+                        <label for="password">Before continuing, enter your old password for security reasons</label>
+                        <input type="password" class="old-password" id="old-password" required>
+                    </fieldset>                    
+                    <input type="submit" class="submit-button" value="Update Details">
+                </form>
+            </div>
+        </section>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="js/edit.js"></script>
+</html>
