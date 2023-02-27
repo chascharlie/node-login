@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="utf-8">
+        <title>Delete Account</title>
+        <link rel="stylesheet" href="css/delete.css">
+    </head>
+    <body>
+        <section>
+            <div class="container">
+                <h1>Delete Account</h1>
+                <p>YOU WON'T BE ABLE TO RESTORE YOUR ACCOUNT AFTER THIS ACTION</p>
+                <p class="err-msg" hidden></p>
+                <form>
+                    <fieldset>
+                        <label for="password">Enter your password to continue</label>
+                        <input type="password" class="password" id="password" required>
+                    </fieldset>
+                    <input type="submit" class="submit-button" value="Delete Account">
+                </form>
+            </div>
+        </section>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="js/delete.js"></script>
+</html>

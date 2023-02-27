@@ -9,18 +9,9 @@ if (session) { // If session exists in cookie
         // When response received
         success: (res) => {
             if (res['success']) { // If request succeeeded
-                // Get data from response
-                let firstName = res['firstname'];
-                let lastName = res['lastname'];
-                let email = res['email'];
-
-                // Set text
-                $('.first-name').html(firstName);
-                $('.last-name').html(lastName);
-                $('.email').html(email);
             }
             else {
-                // Send POST request to clearsession
+                // Send POST request to /clearsession
                 $.post({
                     url: '/clearsession',
                     data: {
@@ -40,22 +31,27 @@ else {
     location.href = "login.html";
 }
 
-// When logout button clicked
-$('.logout-button').click(() => {
-    // Send POST request to clearsession
+$('form').submit((e) => {
+    e.preventDefault() // Disable default behaviour of form submitting; this prevents the page refreshing and code failing to run
+
+    // Send POST request to /delete
     $.post({
-        url: '/clearsession',
+        url: "/delete",
         data: {
-            session: session
+            // Include session and entered password
+            session: session,
+            password: $('.password').val()
         },
         success: (res) => {
-            document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"; // Delete cookie by expiring it
-            location.href = "login.html"; // Return to login page
+            if (res['success']) { // If request succeeded
+                document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"; // Delete cookie by expiring it
+                location.href = "login.html"; // Return to login page
+            }
+            else { // If request failed
+                let err = res['msg']; // Get message from response
+                $('.err-msg').show(); // Show err-msg element
+                $('.err-msg').html(err); // Change contents of err-msg to message
+            }
         }
     });
-});
-
-// When delete button clicked
-$('.delete-button').click(() => {
-    location.href = "delete.html"; // Go to delete page
 });

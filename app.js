@@ -180,5 +180,76 @@ app.post('/clearsession',express.urlencoded({extended: true}), (req,res) => {
     res.jsonp({success:true});
 });
 
+// POST request delete
+// This will delete a user from the database
+app.post('/delete',express.urlencoded({extended: true}), (req,res) => {
+    // Get session ID and hash entered password
+    let password = crypto.createHmac('sha256',req.body.password).digest('hex');
+    let sessionId = req.body.session;
+
+    // Find user ID corresponding to session
+    db.get(`SELECT userid FROM sessions WHERE sessionid='${sessionId}'`, (err,row) => {
+        if (row) { // If user ID was found
+            let userId = row.userid; // Get user ID from entry
+            
+            // Check if password entered is correct
+            db.get(`SELECT userid FROM users WHERE password='${password}' AND userid='${userId}'`, (err,row) => {
+                if (row) {
+                    // Delete row corresponding to user ID
+                    db.run(`DELETE FROM users WHERE userid='${userId}'`, (err) => {
+                        if (err) { // If a SQL error occured
+                            res.jsonp({
+                                success: false,
+                                msg: "SQL-related error, please contact administrators"
+                            });
+                        }
+                        else {
+                            // Delete all sessions corresponding to user ID
+                            db.run(`DELETE FROM sessions WHERE userid='${userId}'`, (err) => {
+                                if (err) { // If a SQL error occured
+                                    res.jsonp({
+                                        success: false,
+                                        msg: "SQL-related error, please contact administrators"
+                                    });
+                                }
+                                else { // No error
+                                    res.jsonp({
+                                        success: true
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+                else if (err) { // If a SQL error occured
+                    res.jsonp({
+                        success: false,
+                        msg: "SQL-related error, please contact administrators"
+                    });
+                }
+                else { // No SQL error or matching entry, meaning password is incorrect
+                    res.jsonp({
+                        success: false,
+                        msg: "Incorrect password"
+                    });  
+                }
+            });
+
+        }
+        else if (err) { // If a SQL error occured
+            res.jsonp({
+                success: false,
+                msg: "SQL-related error, please contact administrators"
+            });
+        }
+        else { // No matching entry for user ID on users table
+            res.jsonp({
+                success: false,
+                msg: "User not found on database"
+            });  
+        }
+    });
+});
+
 const server = http.createServer(app); // Create server running express app
 server.listen(8080); // Run on port 8080

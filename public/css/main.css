@@ -29,12 +29,19 @@ fieldset {
     padding-right: 10px;
 }
 
-.logout-button {
+button {
     min-width: 5%;
     height: 40px;
     border: none;
     border-radius: 5px;
-    background-color: rgb(0, 46, 105);
     color: white;
     font-size: 15px;
+}
+
+.logout-button {
+    background-color: rgb(0, 46, 105);
+}
+
+.delete-button {
+    background-color: rgb(167, 0, 0);
 }
