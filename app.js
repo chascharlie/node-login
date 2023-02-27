@@ -203,7 +203,7 @@ app.post('/delete',express.urlencoded({extended: true}), (req,res) => {
                                 msg: "SQL-related error, please contact administrators"
                             });
                         }
-                        else {
+                        else { // No error
                             // Delete all sessions corresponding to user ID
                             db.run(`DELETE FROM sessions WHERE userid='${userId}'`, (err) => {
                                 if (err) { // If a SQL error occured
